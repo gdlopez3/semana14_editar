@@ -52,6 +52,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         # guardar
         self.crear_base()
+        self.obtener_informacion()
         self.guardar.clicked.connect(self.guardar_informacion)
         self.actualizar.clicked.connect(self.obtener_informacion)
         #
@@ -69,7 +70,10 @@ class Ui_MainWindow(object):
     def crear_base(self):
         cursor = conn.cursor()
         cadena_sql = 'CREATE TABLE Empleado (nombre TEXT, sueldo INTEGER)'
-        cursor.execute(cadena_sql)
+        try:
+            cursor.execute(cadena_sql)
+        except:
+            pass
         cursor.close()
 
     def guardar_informacion(self):
