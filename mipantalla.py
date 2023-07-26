@@ -18,16 +18,16 @@ class Ui_MainWindow(object):
         MainWindow.resize(689, 514)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.nombre = QtWidgets.QLineEdit(self.centralwidget)
-        self.nombre.setGeometry(QtCore.QRect(140, 80, 113, 23))
-        self.nombre.setObjectName("nombre")
+        self.habitacion = QtWidgets.QLineEdit(self.centralwidget)
+        self.habitacion.setGeometry(QtCore.QRect(140, 80, 113, 23))
+        self.habitacion.setObjectName("habitacion")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(70, 80, 54, 15))
         self.label.setObjectName("label")
-        self.sueldo = QtWidgets.QLineEdit(self.centralwidget)
-        self.sueldo.setGeometry(QtCore.QRect(140, 150, 113, 23))
-        self.sueldo.setText("")
-        self.sueldo.setObjectName("sueldo")
+        self.numPax = QtWidgets.QLineEdit(self.centralwidget)
+        self.numPax.setGeometry(QtCore.QRect(140, 150, 113, 23))
+        self.numPax.setText("")
+        self.numPax.setObjectName("numPax")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(70, 150, 54, 15))
         self.label_2.setObjectName("label_2")
@@ -37,11 +37,11 @@ class Ui_MainWindow(object):
         self.actualizar = QtWidgets.QPushButton(self.centralwidget)
         self.actualizar.setGeometry(QtCore.QRect(70, 262, 211, 21))
         self.actualizar.setObjectName("actualizar")
-        self.listaEmpleados = QtWidgets.QTableWidget(self.centralwidget)
-        self.listaEmpleados.setGeometry(QtCore.QRect(370, 70, 256, 192))
-        self.listaEmpleados.setObjectName("listaEmpleados")
-        self.listaEmpleados.setColumnCount(0)
-        self.listaEmpleados.setRowCount(0)
+        self.listaHuespedes = QtWidgets.QTableWidget(self.centralwidget)
+        self.listaHuespedes.setGeometry(QtCore.QRect(370, 70, 256, 192))
+        self.listaHuespedes.setObjectName("listaHuespedes")
+        self.listaHuespedes.setColumnCount(0)
+        self.listaHuespedes.setRowCount(0)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 689, 20))
@@ -62,14 +62,14 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Nombre"))
-        self.label_2.setText(_translate("MainWindow", "Sueldo"))
+        self.label.setText(_translate("MainWindow", "habitacion"))
+        self.label_2.setText(_translate("MainWindow", "numPax"))
         self.guardar.setText(_translate("MainWindow", "Guardar"))
         self.actualizar.setText(_translate("MainWindow", "Actualizar"))
 
     def crear_base(self):
         cursor = conn.cursor()
-        cadena_sql = 'CREATE TABLE Empleado (nombre TEXT, sueldo INTEGER)'
+        cadena_sql = 'CREATE TABLE Huespedes (habitacion INTEGER, numPax INTEGER, costoHab INTEGER)'
         try:
             cursor.execute(cadena_sql)
         except:
@@ -78,10 +78,11 @@ class Ui_MainWindow(object):
 
     def guardar_informacion(self):
         cursor = conn.cursor()
-        nombre = str(self.nombre.text())
-        sueldo = int(self.sueldo.text())
-        cadena_sql = """INSERT INTO Empleado (nombre, sueldo) VALUES ('%s', %d);""" % \
-    (nombre, sueldo)
+        habitacion = int(self.habitacion.text())
+        numPax = int(self.numPax.text())
+        costo = numPax*15
+        cadena_sql = """INSERT INTO Huespedes (habitacion, numPax, costoHab) VALUES (%d, %d, %d);""" % \
+    (habitacion, numPax, costo)
         # ejecutar el SQL
         cursor.execute(cadena_sql)
         # confirmar los cambios
@@ -90,20 +91,20 @@ class Ui_MainWindow(object):
 
     def obtener_informacion(self):
         cursor = conn.cursor()
-        cadena_consulta_sql = "SELECT * from Empleado"
+        cadena_consulta_sql = "SELECT * from Huespedes"
         cursor.execute(cadena_consulta_sql)
         informacion = cursor.fetchall()
-        database_table_column_count = 2
-        self.listaEmpleados.setColumnCount(database_table_column_count)
+        database_table_column_count = 3
+        self.listaHuespedes.setColumnCount(database_table_column_count)
         numero_filas = len(informacion)
-        self.listaEmpleados.setRowCount(numero_filas)
+        self.listaHuespedes.setRowCount(numero_filas)
         for j in range(numero_filas):
             valor = informacion[j]
             for i in range(0, len(valor)):
                 elemento = valor[i]
                 elemento = str(elemento)
                 nuevo_registro = QtWidgets.QTableWidgetItem(elemento)
-                self.listaEmpleados.setItem(j, i, nuevo_registro)
+                self.listaHuespedes.setItem(j, i, nuevo_registro)
 
 if __name__ == "__main__":
     import sys
